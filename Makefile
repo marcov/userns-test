@@ -31,10 +31,19 @@ OUTFILE := out.txt
 
 .DEFAULT_GOAL := all
 all: volumetest $(HOST_VOLUMES)
+	rm -f $(OUTFILE)
+	@echo "Run as root with no user NS" | tee -a $(OUTFILE)
 	podman run $(PODMAN_OPTS) $< /bin/bash /runtest.sh | tee -a $(OUTFILE)
+	@echo "" | tee -a $(OUTFILE)
+	@echo "Run as user 1000 with no user NS" | tee -a $(OUTFILE)
 	podman run --user=1000 $(PODMAN_OPTS) $< /bin/bash /runtest.sh | tee -a $(OUTFILE)
+	@echo "" | tee -a $(OUTFILE)
+	@echo "Run as root with user NS " | tee -a $(OUTFILE)
 	podman run $(PODMAN_ID_MAPS) $(PODMAN_OPTS) $< /bin/bash /runtest.sh | tee -a $(OUTFILE)
+	@echo "" | tee -a $(OUTFILE)
+	@echo "Run as user 1000 with user NS " | tee -a $(OUTFILE)
 	podman run --user=1000 $(PODMAN_ID_MAPS) $(PODMAN_OPTS) $< /bin/bash /runtest.sh | tee -a $(OUTFILE)
+	@echo "" | tee -a $(OUTFILE)
 
 .PHONY: volumetest
 volumetest:
