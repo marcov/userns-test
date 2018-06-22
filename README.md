@@ -52,7 +52,7 @@ create /mnt/vol-1k/foobar: 1
 ```
 
 
-Results with podman version `82a948c04ec068acb9f0d47dc0f9e3bd05b4c90c`:
+Results with podman version `82a948c04ec068acb9f0d47dc0f9e3bd05b4c90c` (after commit `bb4db6d54873c05d0654ab848c09c24a76c95a73`):
 ```
 Run as root with no user NS
 total 0
