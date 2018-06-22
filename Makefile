@@ -13,6 +13,12 @@ PODMAN_ID_MAPS = --uidmap=0:100000:1000000 --gidmap=0:100000:1000000
 
 OUTFILE := out.txt
 
+TGT_IMAGE_VALUES = userns-volume-create userns-volume-exist
+
+ifeq ($(filter $(TGT_IMAGE_VALUES),$(TGT_IMAGE)),)
+  $(error "Invalid value of $(TGT_IMAGE), (should be one of $(TGT_IMAGE_VALUES))")
+endif
+
 /mnt/vol-0:
 	mkdir -p $@
 	chown 0:0 $@
@@ -30,7 +36,7 @@ OUTFILE := out.txt
 	chown 101000:101000 $@
 
 .DEFAULT_GOAL := all
-all: volumetest $(HOST_VOLUMES)
+all: $(TGT_IMAGE) $(HOST_VOLUMES)
 	rm -f $(OUTFILE)
 	@echo "Run as root with no user NS" | tee -a $(OUTFILE)
 	podman run $(PODMAN_OPTS) $< /bin/bash /runtest.sh | tee -a $(OUTFILE)
@@ -45,7 +51,7 @@ all: volumetest $(HOST_VOLUMES)
 	podman run --user=1000 $(PODMAN_ID_MAPS) $(PODMAN_OPTS) $< /bin/bash /runtest.sh | tee -a $(OUTFILE)
 	@echo "" | tee -a $(OUTFILE)
 
-.PHONY: volumetest
-volumetest:
-	buildah inspect $@ &>/dev/null || buildah bud -t $@ .
+.PHONY: $(TGT_IMAGE)
+$(TGT_IMAGE):
+	buildah inspect $@ &>/dev/null || buildah bud -t $@ -f Dockerfile-$@ .
 
