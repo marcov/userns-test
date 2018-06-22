@@ -16,7 +16,7 @@ OUTFILE := out.txt
 TGT_IMAGE_VALUES = userns-volume-create userns-volume-exist
 
 ifeq ($(filter $(TGT_IMAGE_VALUES),$(TGT_IMAGE)),)
-  $(error "Invalid value of $(TGT_IMAGE), (should be one of $(TGT_IMAGE_VALUES))")
+  $(error "Invalid value of TGT_IMAGE, (should be one of $(TGT_IMAGE_VALUES))")
 endif
 
 /mnt/vol-0:
